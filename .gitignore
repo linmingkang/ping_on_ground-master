@@ -1,0 +1,5 @@
+.vscode/
+.idea/
+nohup.out
+env/
+venv/

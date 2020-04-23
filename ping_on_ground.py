@@ -89,6 +89,7 @@ while True:
                 if old_data:
                     old_data1 = list(zip(*old_data))[2]
                     online_time[train_id] = old_data1[0]
+
                 else:
                     online_time[train_id] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     sql = "insert into train_connectivity(train_id, online_time) values('%s', '%s');" % (train_id, online_time[train_id])

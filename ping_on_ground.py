@@ -78,6 +78,19 @@ while True:
                 db_insert_update_del(cursor, sql)
                 sql = "insert into train_connectivity(train_id, online_time, offline_time) values('%s', '%s', '%s');" % (train_id, online_time[train_id], off)
                 db_insert_update_del(cursor, sql)
+            else:
+                cursor = db.cursor()
+                sql = "select * from train_connectivity where train_id='%s' and offline_time is null;" % train_id
+                cursor.execute(sql)
+                old_data = cursor.fetchall()
+                if old_data:
+                    old_data1 = list(zip(*old_data))[2]
+                    online_time[train_id] = old_data1[0]
+                    off = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    sql = "delete from train_connectivity where train_id='%s' and offline_time is null;" % train_id
+                    db_insert_update_del(cursor, sql)
+                    sql = "insert into train_connectivity(train_id, online_time, offline_time) values('%s', '%s', '%s');" % (train_id, online_time[train_id], off)
+                    db_insert_update_del(cursor, sql)
         else:   # pingtong
             sql = "update train_online_flag set online_flag = 1 where train_id = '%s';" % train_id
             db_insert_update_del(cursor, sql)
@@ -89,7 +102,6 @@ while True:
                 if old_data:
                     old_data1 = list(zip(*old_data))[2]
                     online_time[train_id] = old_data1[0]
-
                 else:
                     online_time[train_id] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     sql = "insert into train_connectivity(train_id, online_time) values('%s', '%s');" % (train_id, online_time[train_id])
